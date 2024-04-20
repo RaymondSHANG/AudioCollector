@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container bg-light" style="padding:50px">
+    <h1>Welcome!</h1>
+    <h5>This is a FHIR client web app built with Flask.</h5>
+    <br>
+    <h2>Intro</h2>
+    <p>
+      This web app integrates audio collection function to the current patient profile.
+      </p>
+    <p>
+      It connects to sandbox FHIR servers (or any other FHIR server) via OAuth, and get the patient profiles. The current app could also
+      Patients within the FHIR servers could register to our local server.
+      After that, they could start their task by reading a paragraph of google news and upload their audio files.
+      Our local server then collect their audio task information.
+      At the local site, we have python sqlite database to save the News, UserModel, AudioTask tables.
+    </p>
+    <br>
+
+  </div>
+  <br>
+  <div class="container bg-light" style="padding:50px">
+    <h2>Instruction</h2>
+    <ol>
+      <li><a href="{{ url_for('news_bp.showNews') }}">Add news</a> to local database.</li>
+
+      <li><a href="{{ url_for('users_bp.login') }}">Login</a> to FHIR server to get patient information.</li>
+      <li>Go to <a href="{{ url_for('appointments_bp.list') }}">Appointments</a> and click "share" button again, now you should see a banner saying sharing successful.</li>
+      <li>If you want to verify the sharing, click <a href="{{ url_for('users_bp.logout') }}">Logout</a> and login to SMART as the primary EHR. You should be able to see the Encounter that you share from the Epic previously in <a href="{{ url_for('appointments_bp.list') }}">Appointments</a>.</li>
+    </ol>
+  </div>
+  <br>
+  <div class="container bg-light" style="padding:50px">
+    <h2>Disclaimer</h2>
+    <p>All information displayed here is retrieved from the sandbox servers and is for demo noly.</p>
+    <br>
+    <h2>Source</h2>
+    <ul>
+      <li><a href="https://github.com/kelhwh/fhir-flask-client-web-app">My GitHub repo</a></li>
+    </ul>
+  </div>
+{% endblock %}

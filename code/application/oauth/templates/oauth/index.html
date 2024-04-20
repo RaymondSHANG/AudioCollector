@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container bg-light" style="padding:50px">
+    <h1>Login via your EHR provider</h1>
+  </div>
+  <div class="container" style="background:white; padding:50px">
+    <br>
+    {% if connection_type=='target' %}
+    <h2>Login to the EHR server:</h2>
+    {% endif %}
+    <table class="table table-borderless">
+      <tbody>
+        <tr style="vertical-align: middle">
+          <th style="width: 100px; height: 80px; font-size: 32px">Smart Sandbox</th>
+          <td style="width: 200px">pre-filled credentials</td>
+          <td style="text-align:left">
+            <a class="btn btn-primary" href="{{ url_for('oauth_bp.redirect_to_auth', service='smart', connection_type=connection_type) }}" rold="button">Login</a>
+          </td>
+        </tr>
+      </tbody>
+  </div>
+{% endblock %}

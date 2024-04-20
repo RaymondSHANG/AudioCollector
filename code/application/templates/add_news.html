@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container bg-light">
+    <h1>Latest News from google news</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>News</th>
+                <th>Title</th>
+                <th>Text</th>
+                <th>Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for news in new_news %}
+            <tr>
+                <td>{{ news.id }}</td>
+                <td>{{ news.title }}</td>
+                <td>{{ news.body }}</td>
+                <td>{{ news.level }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form action="{{ url_for('news_bp.addNews') }}" method="POST">
+        <button type="submit">Add News to Database</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% from 'macros.html' import render_form %}
+{% extends "base.html" %}
+{% block content %}
+  <div class="container bg-light">
+    <h1>Register</h1>
+    <br>
+    <form novalidate method="POST">
+      {{ form.hidden_tag() }}
+      {{ render_form(form.family_name) }}<br>
+      <br>
+      {{ render_form(form.date_of_birth) }}<br>
+      <br>
+      {{ render_form(form.identifier_system) }} {{ render_form(form.identifier_value, label=False) }}
+      <br>
+      {{ render_form(form.email) }}<br>
+      <br>
+      {{ render_form(form.password) }}<br>
+      <br>
+      {{ render_form(form.password_confirm) }}<br>
+      <br>
+      {{ form.submit()}}
+    </form>
+  </div>
+{% endblock %}

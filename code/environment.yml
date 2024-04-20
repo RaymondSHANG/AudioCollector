@@ -1,0 +1,23 @@
+name: testFHIR
+
+dependencies:
+  - python=3.12
+  - numpy
+  - pandas
+  - matplotlib
+  - Werkzeug
+  - WTForms
+  - SQLAlchemy
+  - alembic
+  - Flask
+  - uwsgi
+  - email_validator
+  - PyYAML
+  - newspaper3k
+  - gnews
+  - lxml_html_clean
+  - Flask_SQLAlchemy
+  - Flask_WTF
+  - Flask_Login
+  - Flask_Migrate
+  - fhirclient

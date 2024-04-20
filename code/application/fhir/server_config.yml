@@ -1,0 +1,15 @@
+epic:
+  app_id: "your-app-id" #register to epic app orchard to get your app id
+  redirect_uri: "http://127.0.0.1:5000/oauth/epic/callback"
+  api_base: "https://fhir.epic.com/interconnect-fhir-oauth/api/FHIR/STU3/"
+
+smart:
+  app_id: "testing-app-id"
+  redirect_uri: "http://127.0.0.1:5000/oauth/smart/callback"
+  api_base: "http://hapi.fhir.org/baseDstu3/"
+#https://launch.smarthealthit.org/v/r4/sim/WzIsIiIsIiIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0/fhir
+#    api_base: 'https://launch.smarthealthit.org/v/r3/sim/eyJrIjoiMSIsImIiOiJlNjZhMmFmOS02ZTY2LTQ5OTItOTdhMS1hMTZlNmZkNmQ2NDIifQ/fhir'
+#https://bulk-data.smarthealthit.org/eyJlcnIiOiIiLCJwYWdlIjoxMDAwMCwiZHVyIjoxMCwidGx0IjoxNSwibSI6MSwic3R1Ijo0LCJkZWwiOjB9/fhir
+#http://hapi.fhir.org/baseDstu3/
+#http://hapi.fhir.org/baseR4
+#http://hapi.fhir.org/baseDstu3/
