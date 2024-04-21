@@ -1,11 +1,13 @@
-from flask import render_template, Blueprint, redirect, url_for, request
+from flask import render_template, Blueprint, session, flash, redirect, url_for, request
 from fhirclient.models import condition, practitioner
 from application.fhir.connect import connector
 from application.fhir.search import ResourceFinder
-from application.oauth.utils import oauth_required
+#from application.oauth.utils import oauth_required
 from datetime import datetime, timedelta
 import pandas as pd
-
+from application.fhir.connect import smart
+from fhirclient.models.patient import Patient
+from flask_login import current_user, login_required
 
 medications_bp = Blueprint(
     'medications_bp',
@@ -15,12 +17,13 @@ medications_bp = Blueprint(
 )
 
 @medications_bp.route('/list')
-@oauth_required
+@login_required
 def list():
-    smart=connector.source_client
+    #smart=connector.source_client
+    patient = Patient.read(current_user.patient_id, smart.server)
     MedicationRequestFinder = ResourceFinder('MedicationRequest', smart.server)
 
-    result = MedicationRequestFinder.find_by_patient(smart.patient_id)
+    result = MedicationRequestFinder.find_by_patient(current_user.patient_id)
     resource_list = [item for item in result.resource_list() if item.resource_type==MedicationRequestFinder.resource_type]
 
     medications = []
@@ -45,14 +48,14 @@ def list():
         medications.append(dict)
         medications = [m for m in sorted(medications, key=lambda item: item['date'], reverse=True)]
 
-    return render_template('list.html', medications=medications, smart=smart)
+    return render_template('list.html', medications=medications, smart=smart,patient = patient)
 
 
 @medications_bp.route('/grid', methods=['GET'])
-@oauth_required
+@login_required
 def grid():
-    smart=connector.source_client
-    
+    #smart=connector.source_client
+    patient = Patient.read(current_user.patient_id, smart.server)
     search_date = request.args.get('search_date') or '2014-01-25'
     search_date = datetime.fromisoformat(search_date).date()
     start = search_date - timedelta(days = 15)
@@ -88,5 +91,6 @@ def grid():
         start=start,
         end=end,
         date_range=date_range,
-        smart=smart
+        smart=smart,
+        patient = patient
     )

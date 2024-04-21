@@ -8,6 +8,8 @@
       {{ form.hidden_tag() }}
       {{ render_form(form.family_name) }}<br>
       <br>
+      {{ render_form(form.given_name) }}<br>
+      <br>
       {{ render_form(form.date_of_birth) }}<br>
       <br>
       {{ render_form(form.oauth_server) }}<br>
@@ -22,5 +24,9 @@
       <br>
       {{ form.submit()}}
     </form>
+
+    <br>
+    <p>Already have an account? <a href="{{ url_for('users_bp.login') }}">Login</a></p>
+
   </div>
 {% endblock %}

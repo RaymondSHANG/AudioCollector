@@ -1,8 +1,12 @@
-from flask import render_template, Blueprint, request
+from flask import render_template, Blueprint, session, flash, redirect, url_for,request
 from application.fhir.search import ResourceFinder
 from application.fhir.connect import connector
 from contextlib import suppress
-from application.oauth.utils import oauth_required
+#from application.oauth.utils import oauth_required
+from application.fhir.connect import smart
+from fhirclient.models.patient import Patient
+from flask_login import current_user, login_required
+
 
 ROWS_PER_PAGE = 10
 
@@ -14,16 +18,16 @@ appointments_bp = Blueprint(
 
 
 @appointments_bp.route('/list', methods=['GET'])
-@oauth_required
+@login_required
 def list():
-    smart=connector.source_client
+    #smart=connector.source_client
 
     page = request.args.get('page', 1, type=int)
 
     OrganizationFinder = ResourceFinder.build('Organization', smart.server)
     EncounterFinder = ResourceFinder.build('Encounter', smart.server)
-
-    result = EncounterFinder.find_by_patient(smart.patient_id, batch_size=ROWS_PER_PAGE, page=page)
+    patient = Patient.read(current_user.patient_id, smart.server)
+    result = EncounterFinder.find_by_patient(current_user.patient_id, batch_size=ROWS_PER_PAGE, page=page)
     appointments_list = [item for item in result.resource_list() if item.resource_type==EncounterFinder.resource_type]
 
     max_page = ((result.total or 0) // ROWS_PER_PAGE) + 1
@@ -58,4 +62,5 @@ def list():
         , max_page=max_page
         , current_page=page
         , smart=smart
+        , patient = patient
     )

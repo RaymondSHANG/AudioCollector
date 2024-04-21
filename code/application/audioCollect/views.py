@@ -8,14 +8,15 @@ from application.profile.forms import EditProfileForm
 #from application.oauth.utils import oauth_required
 from application.fhir.connect import smart
 
-profile_bp = Blueprint(
-    'profile_bp',
+audioCollect_bp = Blueprint(
+    'audioCollect_bp',
     __name__,
-    url_prefix='/profile'
+    url_prefix='/audioCollect'
+    template_folder='templates'
 )
 
 
-@profile_bp.route('/', methods=['GET'])
+@audioCollect_bp.route('/', methods=['GET'])
 @login_required
 def profile():
     # If not login go to login
@@ -74,38 +75,3 @@ def profile():
 
     return render_template('profile.html', profile=profile, patient=patient,smart=smart)
 
-@profile_bp.route('/edit', methods=['GET', 'POST'])
-@login_required
-def edit():
-    try:
-        session['profile']
-    except KeyError:
-        return redirect(url_for('profile_bp.profile'))
-
-    form = EditProfileForm()
-
-    #smart = connector.source_client
-    PatientFinder = ResourceFinder.build('Patient', smart.server)
-    patient = PatientFinder.find_by_id(
-        current_user.patient_id,
-        first=True
-    )
-
-    if form.validate_on_submit():
-        city = form.city.data
-        state = form.state.data
-        postalcode = form.postalcode.data
-        country = form.country.data
-
-        patient.address[0].city = city
-        patient.address[0].state = state
-        patient.address[0].postalCode = postalcode
-        patient.address[0].country = country
-
-        updated_patient_dict = patient.update()
-
-        if updated_patient_dict:
-            flash("Your profile has been updated successfully!")
-            return redirect(url_for('profile_bp.profile'))
-
-    return render_template('edit.html', form=form, profile=session['profile'])

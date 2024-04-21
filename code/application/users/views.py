@@ -5,6 +5,8 @@ from application.models import UserModel
 from application.users.forms import LoginForm, RegistrationForm
 from application.fhir.search import ResourceFinder
 from application.fhir.connect import smart
+from fhirclient.models.patient import Patient
+from flask_login import current_user, login_required
 
 users_bp = Blueprint('users_bp', __name__)
 
@@ -13,14 +15,11 @@ users_bp = Blueprint('users_bp', __name__)
 def register():
     form = RegistrationForm()
     flash(f"smart server:{smart}")
-    PatientFinder = ResourceFinder.build('Patient', smart.server)
-
+    #PatientFinder = ResourceFinder.build('Patient', smart.server)
+    #patient = Patient.read(current_user.patient_id, smart.server)
     if form.validate_on_submit():
-        patient = PatientFinder.find_by_identifier(
-            form.identifier_system.data,
-            form.identifier_value.data,
-            first=True
-        )
+        # Check patient on FHIR server
+        patient = Patient.read(form.identifier_value.data, smart.server)
 
         if not patient:
             flash(f'No patient record found, please check again. If you keep failing the verification, please contact your provider.')
@@ -28,12 +27,17 @@ def register():
         else:
             check_patient_duplicated = UserModel.query.filter_by(
                 patient_id=patient.id).first()
+            check_email_matched = UserModel.query.filter_by(
+                email=form.email.data).first()
             check_dob_matched = patient.birthDate.date == form.date_of_birth.data
             check_family_matched = patient.name[0].family == form.family_name.data
-
+            check_given_matched = patient.name[0].given[0] == form.given_name.data
+            
             if check_patient_duplicated:
                 flash(f'The patient has been registered already.')
-            elif not (check_dob_matched or check_family_matched):
+            elif check_email_matched:
+                flash(f'The email has been registered already.')
+            elif not (check_dob_matched or check_family_matched or check_given_matched):
                 flash(f'No patient record found, please check again. If you keep failing the verification, please contact your provider.')
             else:
                 user = UserModel(

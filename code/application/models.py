@@ -22,7 +22,7 @@ class UserModel(db.Model, UserMixin):
     identifier_value = db.Column(db.String(64), nullable=True)
     oauth_server = db.Column(db.String(64), default='smart',nullable=True)
     patient_id = db.Column(db.Integer)
-    email = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.String(64), unique=True, nullable=True)
     password_hash = db.Column(db.String(256), nullable=True)
 
     def __init__(self, given_name, family_name, date_of_birth, identifier_system, identifier_value, oauth_server, patient_id, email, password):

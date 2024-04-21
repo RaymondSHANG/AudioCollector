@@ -35,15 +35,14 @@
         </div>
         <div class="collapse multi-collapse navbar-collapse w-100 order-3" id="navbarLogin">
           <ul class="navbar-nav ms-auto">
-            {% if current_user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link active" href="{{ url_for('oauth_bp.reset') }}">Logout</a>
-            </li>
-            {% else %}
+                     
+            {% if not current_user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link active" href="{{ url_for('oauth_bp.index', connection_type='source') }}">Login</a>
             </li>
             {% endif %}
+            
+
           </ul>
         </div>
       </div>

@@ -48,20 +48,29 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    given_name = StringField(
+        'First Name',
+        validators=[
+            InputRequired(),
+            Length(max=64, message='Must be less than %(max)d characters long.')
+        ],
+        default='Alex'  # for demo user
+    )
+
     family_name = StringField(
         'Family Name',
         validators=[
             InputRequired(),
             Length(max=64, message='Must be less than %(max)d characters long.')
         ],
-        default='Franecki195'  # for demo user
+        default='Smith'  # for demo user
     )
     
     date_of_birth = DateField(
         'Date of Birth',
         format='%Y-%m-%d',
         validators=[InputRequired()],
-        default=datetime.datetime(1995, 4, 20)  # for demo user
+        default=datetime.datetime(2001, 11, 28)  # for demo user
     )
 
     oauth_server = SelectField(
@@ -79,12 +88,14 @@ class RegistrationForm(FlaskForm):
     identifier_system = SelectField(
         'ID',
         choices=[
+            ('patient_id', 'Patient ID'),
             ('http://hl7.org/fhir/sid/us-ssn', 'Social Security Number')
+            
         ],
         validators=[
             InputRequired()
         ],
-        default='http://hl7.org/fhir/sid/us-ssn'  # for demo user
+        default='patient_id'  # for demo user
     )
     identifier_value = StringField(
         'ID Number',
@@ -93,7 +104,7 @@ class RegistrationForm(FlaskForm):
             Length(max=64, message='Must be less than %(max)d characters long.')
         ],
         render_kw={"placeholder": "Your ID Number"},
-        default='999-45-3776'  # for demo user
+        default='18076'  # for demo user
     )
     email = EmailField(
         'Email',

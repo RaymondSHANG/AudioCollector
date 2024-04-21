@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Recorder</title>
+</head>
+<body>
+    <button id="startRecord">Start Recording</button>
+    <button id="stopRecord" disabled>Stop Recording</button>
+    <button id="playRecord">Play Recording</button>
+    <progress id="playProgress" value="0" max="100"></progress>
+    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+    <input type="text" id="filenameInput" placeholder="Enter filename (without extension)">
+    <button id="submitRecord" style="display: none;">Submit</button>
+
+    <script>
+        let audioBlob;
+
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                const mediaRecorder = new MediaRecorder(stream);
+                let chunks = [];
+
+                document.getElementById('startRecord').addEventListener('click', () => {
+                    chunks = [];
+                    mediaRecorder.start();
+                    document.getElementById('startRecord').disabled = true;
+                    document.getElementById('stopRecord').disabled = false;
+                });
+
+                document.getElementById('stopRecord').addEventListener('click', () => {
+                    mediaRecorder.stop();
+                    document.getElementById('startRecord').disabled = false;
+                    document.getElementById('stopRecord').disabled = true;
+                    document.getElementById('submitRecord').style.display = 'inline';
+                });
+
+                mediaRecorder.ondataavailable = event => {
+                    chunks.push(event.data);
+                }
+
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(chunks, { type: 'audio/wav' });
+
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioElement = new Audio(audioUrl);
+
+                    const playProgress = document.getElementById('playProgress');
+                    const currentTime = document.getElementById('currentTime');
+                    const duration = document.getElementById('duration');
+
+                    audioElement.addEventListener('timeupdate', () => {
+                        const progress = (audioElement.currentTime / audioElement.duration) * 100;
+                        playProgress.value = progress;
+
+                        // Update current time
+                        const currentMinutes = Math.floor(audioElement.currentTime / 60);
+                        const currentSeconds = Math.floor(audioElement.currentTime % 60);
+                        currentTime.textContent = currentMinutes + ':' + (currentSeconds < 10 ? '0' : '') + currentSeconds;
+
+                        // Update duration
+                        const durationMinutes = Math.floor(audioElement.duration / 60);
+                        const durationSeconds = Math.floor(audioElement.duration % 60);
+                        duration.textContent = durationMinutes + ':' + (durationSeconds < 10 ? '0' : '') + durationSeconds;
+                    });
+
+                    document.getElementById('playRecord').addEventListener('click', () => {
+                        audioElement.play();
+                    });
+
+                    document.getElementById('submitRecord').addEventListener('click', () => {
+                        const filenameInput = document.getElementById('filenameInput').value;
+                        const filename = filenameInput.trim() || 'recording';
+
+                        const formData = new FormData();
+                        formData.append('audio', audioBlob, filename + '.wav');
+                        formData.append('filename', filename); 
+                        // Get audio duration
+                        const audio = new Audio(URL.createObjectURL(audioBlob));
+                        audio.onloadedmetadata = () => {
+                            const duration = audio.duration;
+                            formData.append('duration', duration); // Pass audio duration as a parameter
+                        };
+
+                        fetch('/upload', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => {
+                            console.log('Audio uploaded successfully');
+                        })
+                        .catch(error => {
+                            console.error('Error uploading audio:', error);
+                        });
+                    });
+                };
+            })
+            .catch(error => {
+                console.error('Error accessing microphone:', error);
+            });
+    </script>
+</body>
+</html>
