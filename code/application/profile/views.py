@@ -6,6 +6,7 @@ from application.fhir.connect import connector
 from application.fhir.search import ResourceFinder
 from application.profile.forms import EditProfileForm
 from application.oauth.utils import oauth_required
+from application.fhir.connect import smart
 
 profile_bp = Blueprint(
     'profile_bp',
@@ -17,7 +18,7 @@ profile_bp = Blueprint(
 @profile_bp.route('/', methods=['GET'])
 @oauth_required
 def profile():
-    smart = connector.source_client
+    #smart = connector.source_client
     PatientFinder = ResourceFinder.build('Patient', smart.server)
     patient = PatientFinder.find_by_id(smart.patient_id, first=True)
 

@@ -28,6 +28,7 @@ def redirect_to_auth(service, connection_type):
     connector.connect(service=service, connection_type=connection_type)
 
     # url of authorize endpoint with params appended
+    url = ''
     if connection_type == 'source':
         url = connector.source_client.authorize_url
     elif connection_type == 'target':

@@ -42,6 +42,7 @@ def register():
                     date_of_birth=form.date_of_birth.data,
                     identifier_system=form.identifier_system.data,
                     identifier_value=form.identifier_value.data,
+                    oauth_server = form.oauth_server.data,
                     patient_id=patient.id,
                     email=form.email.data,
                     password=form.password.data

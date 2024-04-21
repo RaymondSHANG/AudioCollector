@@ -20,7 +20,7 @@ class UserModel(db.Model, UserMixin):
     date_of_birth = db.Column(db.Date, nullable=True)
     identifier_system = db.Column(db.String(), nullable=True)
     identifier_value = db.Column(db.String(64), nullable=True)
-    oauth_server = db.Column(db.String(64), nullable=True)
+    oauth_server = db.Column(db.String(64), default='smart',nullable=True)
     patient_id = db.Column(db.Integer)
     email = db.Column(db.String(64), nullable=True)
     password_hash = db.Column(db.String(256), nullable=True)

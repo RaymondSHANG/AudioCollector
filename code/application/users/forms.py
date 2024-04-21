@@ -56,12 +56,26 @@ class RegistrationForm(FlaskForm):
         ],
         default='Franecki195'  # for demo user
     )
+    
     date_of_birth = DateField(
         'Date of Birth',
         format='%Y-%m-%d',
         validators=[InputRequired()],
         default=datetime.datetime(1995, 4, 20)  # for demo user
     )
+
+    oauth_server = SelectField(
+        'Authorization Server',
+        choices=[
+            ('smart', 'smart'),
+            ('hapi', 'hapi') #value, label
+        ],
+        validators=[
+            InputRequired()
+        ],
+        default='smart'  # for demo user
+    )
+
     identifier_system = SelectField(
         'ID',
         choices=[

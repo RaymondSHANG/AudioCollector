@@ -20,4 +20,4 @@ dependencies:
   - Flask_WTF
   - Flask_Login
   - Flask_Migrate
-  - fhirclient
+  - fhirclient==3.2
