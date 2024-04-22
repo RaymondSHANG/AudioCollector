@@ -9,7 +9,14 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'secret'
 
+
 base_dir = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_FOLDER = 'audiofiles'
+app.config['UPLOAD_FOLDER'] = os.path.join(base_dir,UPLOAD_FOLDER)
+# Ensure the 'uploads' directory exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(base_dir, 'database.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -36,6 +43,7 @@ from application.profile.views import profile_bp
 from application.medications.views import medications_bp
 from application.oauth.views import oauth_bp
 from application.exchange.views import exchange_bp
+from application.audioCollect.views import audioCollect_bp
 
 app.register_blueprint(core_bp)
 app.register_blueprint(users_bp)
@@ -45,3 +53,4 @@ app.register_blueprint(profile_bp)
 app.register_blueprint(medications_bp)
 app.register_blueprint(oauth_bp)
 app.register_blueprint(exchange_bp)
+app.register_blueprint(audioCollect_bp)
