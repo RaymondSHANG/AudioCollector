@@ -10,7 +10,7 @@
           <th>News Title</th>
           <th>Difficulty Level</th>
           <th>Record Date</th>
-          <th>Time</th>
+          <th>Duration Time</th>
           <th>Score</th>
         </tr>
       </thead>
@@ -19,9 +19,9 @@
         <tr>
             <td>{{ oneaudio[0] }}</td>  <!-- Audio ID -->
             <td>{{ oneaudio[1] }}</td>  <!-- News Title -->
-            <td>{{ oneaudio[2] | date("Y-m-d H:i:s") }}</td>  <!-- Record Date -->
-            <td>{{ oneaudio[3] }}</td>  <!-- News Level -->
-            <td>{{ oneaudio[4] }}</td>  <!-- Audio Duration -->
+            <td>{{ oneaudio[2] }}</td>  <!-- News Level -->
+            <td>{{ oneaudio[3] | formatdate }}</td>  <!-- Record Date -->
+            <td>{{ oneaudio[4] |float|round(4) }} mins</td>  <!-- Audio Duration -->
             <td>{{ oneaudio[5] }}</td>  <!-- Audio Score -->
         </tr>
         {% endfor %}

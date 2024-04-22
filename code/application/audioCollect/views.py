@@ -20,30 +20,35 @@ audioCollect_bp = Blueprint(
     template_folder='templates'
 )
 
-@audioCollect_bp.route('/', methods=['GET'])
-#@login_required
+@audioCollect_bp.route('/myAudio', methods=['GET'])
+@login_required
 def myAudio():
-    audiohistory = db.session.query(
-        News.id,  # ID from AudioRecord
-        News.title,  # Title from News
-        News.level,  # Level from News
-        AudioRecord.record_date,  # Record date from AudioRecord
-        AudioRecord.duration,
-        AudioRecord.score 
-    ).join(News, AudioRecord.news_id == News.id  # Joining AudioRecord with News on news_id
-    ).filter(AudioRecord.patient_id == current_user.patient_id  # Filtering by patient_id
-    ).order_by(AudioRecord.record_date.desc()  # Assuming the date field is named 'record_date'
-    ).limit(10).all()
+    try:
+        audiohistory = db.session.query(
+            News.id,  # ID from AudioRecord
+            News.title,  # Title from News
+            News.level,  # Level from News
+            AudioRecord.record_date,  # Record date from AudioRecord
+            AudioRecord.duration,
+            AudioRecord.score 
+        ).join(News, AudioRecord.news_id == News.id  # Joining AudioRecord with News on news_id
+        ).filter(AudioRecord.patient_id == current_user.id  # Filtering by user.id not patient_id
+        ).order_by(AudioRecord.record_date.desc()  # Assuming the date field is named 'record_date'
+        ).limit(10).all()
 
-    #news_select = News.query.order_by(News.record_date.desc()).limit(10).all()
-    if not audiohistory:
-        flash('There is no audio recordings in the database! Record now!')
+        #nåews_select = News.query.order_by(News.record_date.desc()).limit(10).all()
+        if not audiohistory:
+            flash('There is no audio recordings in the database! Record now!')
+            return redirect(url_for('audioCollect_bp.audioCollect'))
+        
+        return render_template('audioHistory.html',  audiohistory = audiohistory)
+    except Exception as e:
+        current_app.logger.error(f"Error accessing audio history: {e}")
+        flash('Error accessing audio history.')
         return redirect(url_for('audioCollect_bp.audioCollect'))
-    
-    return render_template('audioHistory.html',  audiohistory = audiohistory)
 
 @audioCollect_bp.route('/audioCollect', methods=['GET'])
-#@login_required
+@login_required
 def audioCollect():
     news_select = News.query.order_by(News.pub_date.desc()).limit(10).all()
     if not news_select:
@@ -59,7 +64,7 @@ def audioCollect():
     return render_template('audioCollect.html', patient=patient,smart=smart, news = oneNews)
 
 @audioCollect_bp.route('/upload', methods=['POST'])
-#@login_required
+@login_required
 def upload():
     if 'audio' not in request.files:
         return 'No file part'
@@ -68,6 +73,7 @@ def upload():
         return 'No selected file'
     datetime_postfix = datetime.now().strftime("_%Y%m%d_%H%M%S")
     base_filename = request.form.get('filename', 'recording')  # Default to 'recording' if not provided
+    flash(base_filename)
     # Create the complete filename with datetime postfix
     filename = f"record_{current_user.patient_id}_NewsID{base_filename}_{datetime_postfix}.wav"
     
@@ -81,15 +87,15 @@ def upload():
         audio_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         audio.save(audio_path)
         # Update database:
-        
-        news_record = AudioRecord(patient_id=current_user.patient_id,
-                         news_id=base_filename,
+        news_id = int(base_filename)
+        news_record = AudioRecord(patient_id=current_user.id,
+                         news_id=news_id,
                          record_date=datetime.now(),
                          file_dir=filename,
                          duration=duration
                          )
                     
-        db.session.add_all(news_record)
+        db.session.add(news_record)
         db.session.commit()
 
         flash("File uploaded successfully")

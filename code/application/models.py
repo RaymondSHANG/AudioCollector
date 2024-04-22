@@ -21,7 +21,7 @@ class UserModel(db.Model, UserMixin):
     identifier_system = db.Column(db.String(), nullable=True)
     identifier_value = db.Column(db.String(64), nullable=True)
     oauth_server = db.Column(db.String(64), default='smart',nullable=True)
-    patient_id = db.Column(db.Integer)
+    patient_id = db.Column(db.Integer,unique=True,nullable=True, index=True, name='idx_patient_id')
     email = db.Column(db.String(64), unique=True, nullable=True, index=True, name='idx_user_email')
     password_hash = db.Column(db.String(256), nullable=True)
 
@@ -57,11 +57,11 @@ class AudioRecord(db.Model):
     __tablename__ = 'audio_records'
     
     id = db.Column(db.Integer, primary_key=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('users.id', name='fk_audio_record_patient_id'), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('users.id', name='fk_audio_record_user_id'), nullable=False)
     news_id = db.Column(db.Integer, db.ForeignKey('news.id', name='fk_audio_record_news_id'), nullable=False)
     record_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     file_dir = db.Column(db.String(255), nullable=False)
     duration = db.Column(db.Float, nullable=True)
-    score = (db.Integer)
+    score = db.Column(db.Integer)
     patient = db.relationship('UserModel', backref=db.backref('audio_records', lazy='dynamic'))
     news = db.relationship('News', backref=db.backref('audio_records', lazy='dynamic'))

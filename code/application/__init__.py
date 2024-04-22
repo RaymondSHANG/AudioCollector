@@ -16,6 +16,12 @@ app.config['UPLOAD_FOLDER'] = os.path.join(base_dir,UPLOAD_FOLDER)
 # Ensure the 'uploads' directory exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+def format_date(value, format_string='%Y-%m-%d %H:%M:%S'):
+    if value is None:
+        return ""
+    return value.strftime(format_string)
+# Register the filter
+app.jinja_env.filters['formatdate'] = format_date
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(base_dir, 'database.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
