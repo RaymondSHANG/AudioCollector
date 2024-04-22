@@ -13,6 +13,9 @@ python app.py
 
 Go to http://127.0.0.1:5000/ and register a user with prefilled values and then login.
 
+## Overall structure
+
+
 ## References
 1. fhirclient, https://pypi.org/project/fhirclient/
 2. SMART on FHIR, https://github.com/smart-on-fhir

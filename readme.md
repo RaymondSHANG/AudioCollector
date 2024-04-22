@@ -132,3 +132,15 @@ I also have a news table, which store the daily news with a news.id and other ch
 
 Some code is modified from https://github.com/kelhwh/fhir-flask-client-web-app, which built a basic framework.
 
+## overall structure diagram
+![diagram](documents/overallStructure.png)
+
+## Reference:
+1. fhirclient, https://pypi.org/project/fhirclient/
+2. SMART on FHIR, https://github.com/smart-on-fhir
+3. SMART on FHIR python client demo
+, https://github.com/pete88b/smart-on-fhir-client-py-demo
+4. fhir-flask-client-web-app,https://github.com/kelhwh/fhir-flask-client-web-app
+5. SMART Launcher,https://launch.smarthealthit.org/
+6. App Launch: Scopes and Launch Context,https://www.hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html
+7. Flask’s documentation, https://flask.palletsprojects.com/en/3.0.x/
