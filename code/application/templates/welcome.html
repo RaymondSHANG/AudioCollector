@@ -25,8 +25,13 @@
       <li><a href="{{ url_for('news_bp.showNews') }}">Add news</a> to local database.</li>
 
       <li><a href="{{ url_for('users_bp.login') }}">Login</a> to FHIR server to get patient information.</li>
-      <li>Go to <a href="{{ url_for('appointments_bp.list') }}">Appointments</a> and click "share" button again, now you should see a banner saying sharing successful.</li>
-      <li>If you want to verify the sharing, click <a href="{{ url_for('users_bp.logout') }}">Logout</a> and login to SMART as the primary EHR. You should be able to see the Encounter that you share from the Epic previously in <a href="{{ url_for('appointments_bp.list') }}">Appointments</a>.</li>
+      <li>Go to <a href="{{ url_for('audioCollect.myAudio') }}">AudioCollection</a> to see audio collection history and start new task.</li>
+      <li>Go to <a href="{{ url_for('appointments_bp.list') }}">Appointments</a> to see appoints.</li>
+      <li>Go to <a href="{{ url_for('medications_bp.list') }}">medications</a> to see medication request history.</li>
+
+      <li>click <a href="{{ url_for('users_bp.logout') }}">Logout</a> current user</a>.</li>
+      <li>click <a href="{{ url_for('users_bp.register') }}">register</a> to register new patient.</li>
+
     </ol>
   </div>
   <br>
@@ -36,7 +41,7 @@
     <br>
     <h2>Source</h2>
     <ul>
-      <li><a href="https://github.com/kelhwh/fhir-flask-client-web-app">My GitHub repo</a></li>
+      <li><a href="https://github.com/RaymondSHANG/AudioCollector">My GitHub repo</a></li>
     </ul>
   </div>
 {% endblock %}
