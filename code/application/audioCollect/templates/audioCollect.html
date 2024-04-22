@@ -10,6 +10,9 @@
     <progress id="playProgress" value="0" max="100"></progress>
     <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
     <button id="submitRecord" style="display: none;">Submit</button>
+    <script>
+        const newsId = "{{ news.id }}";
+    </script>
 
     <script>
         let audioBlob;
@@ -68,7 +71,7 @@
 
                     document.getElementById('submitRecord').addEventListener('click', () => {
                         
-                        const filename =  'recording';
+                        const filename =  newsId;
                     
                         const formData = new FormData();
                         formData.append('audio', audioBlob, filename + '.wav');

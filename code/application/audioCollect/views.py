@@ -8,8 +8,10 @@ from application.fhir.search import ResourceFinder
 #from application.oauth.utils import oauth_required
 from application.fhir.connect import smart
 from application.models import News
+from application.models import AudioRecord
 from application import db
 import random
+from datetime import datetime
 
 audioCollect_bp = Blueprint(
     'audioCollect_bp',
@@ -18,8 +20,29 @@ audioCollect_bp = Blueprint(
     template_folder='templates'
 )
 
-
 @audioCollect_bp.route('/', methods=['GET'])
+#@login_required
+def myAudio():
+    audiohistory = db.session.query(
+        News.id,  # ID from AudioRecord
+        News.title,  # Title from News
+        News.level,  # Level from News
+        AudioRecord.record_date,  # Record date from AudioRecord
+        AudioRecord.duration,
+        AudioRecord.score 
+    ).join(News, AudioRecord.news_id == News.id  # Joining AudioRecord with News on news_id
+    ).filter(AudioRecord.patient_id == current_user.patient_id  # Filtering by patient_id
+    ).order_by(AudioRecord.record_date.desc()  # Assuming the date field is named 'record_date'
+    ).limit(10).all()
+
+    #news_select = News.query.order_by(News.record_date.desc()).limit(10).all()
+    if not audiohistory:
+        flash('There is no audio recordings in the database! Record now!')
+        return redirect(url_for('audioCollect_bp.audioCollect'))
+    
+    return render_template('audioHistory.html',  audiohistory = audiohistory)
+
+@audioCollect_bp.route('/audioCollect', methods=['GET'])
 #@login_required
 def audioCollect():
     news_select = News.query.order_by(News.pub_date.desc()).limit(10).all()
@@ -43,8 +66,11 @@ def upload():
     audio = request.files['audio']
     if audio.filename == '':
         return 'No selected file'
-    filename = request.form.get('filename')  # Get the filename from the form
-    filename = "record_"+str(current_user.patient_id)
+    datetime_postfix = datetime.now().strftime("_%Y%m%d_%H%M%S")
+    base_filename = request.form.get('filename', 'recording')  # Default to 'recording' if not provided
+    # Create the complete filename with datetime postfix
+    filename = f"record_{current_user.patient_id}_NewsID{base_filename}_{datetime_postfix}.wav"
+    
     if not filename:
         filename = 'recording'
     
@@ -52,8 +78,20 @@ def upload():
 
     if audio:
         # Save the audio file with the specified filename
-        audio_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename + '.wav')
+        audio_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         audio.save(audio_path)
+        # Update database:
+        
+        news_record = AudioRecord(patient_id=current_user.patient_id,
+                         news_id=base_filename,
+                         record_date=datetime.now(),
+                         file_dir=filename,
+                         duration=duration
+                         )
+                    
+        db.session.add_all(news_record)
+        db.session.commit()
+
         flash("File uploaded successfully")
-        return redirect(url_for('audioCollect_bp.audioCollect'))
-    return redirect(url_for('audioCollect_bp.audioCollect'))
+        return redirect(url_for('audioCollect_bp.myAudio'))
+    return redirect(url_for('audioCollect_bp.myAudio'))

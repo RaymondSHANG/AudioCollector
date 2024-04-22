@@ -22,7 +22,7 @@ class UserModel(db.Model, UserMixin):
     identifier_value = db.Column(db.String(64), nullable=True)
     oauth_server = db.Column(db.String(64), default='smart',nullable=True)
     patient_id = db.Column(db.Integer)
-    email = db.Column(db.String(64), unique=True, nullable=True)
+    email = db.Column(db.String(64), unique=True, nullable=True, index=True, name='idx_user_email')
     password_hash = db.Column(db.String(256), nullable=True)
 
     def __init__(self, given_name, family_name, date_of_birth, identifier_system, identifier_value, oauth_server, patient_id, email, password):
@@ -43,6 +43,7 @@ class UserModel(db.Model, UserMixin):
         return f"Email: {self.email}, given_name: {self.given_name}"
 
 class News(db.Model):
+    __tablename__ = 'news'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
     body = db.Column(db.Text, nullable=False)
@@ -51,3 +52,16 @@ class News(db.Model):
     length = db.Column(db.Integer, nullable=False)
     hashtags = db.Column(db.Integer, nullable=False)
     level = db.Column(db.Integer, default=5, nullable=False)
+
+class AudioRecord(db.Model):
+    __tablename__ = 'audio_records'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('users.id', name='fk_audio_record_patient_id'), nullable=False)
+    news_id = db.Column(db.Integer, db.ForeignKey('news.id', name='fk_audio_record_news_id'), nullable=False)
+    record_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    file_dir = db.Column(db.String(255), nullable=False)
+    duration = db.Column(db.Float, nullable=True)
+    score = (db.Integer)
+    patient = db.relationship('UserModel', backref=db.backref('audio_records', lazy='dynamic'))
+    news = db.relationship('News', backref=db.backref('audio_records', lazy='dynamic'))
