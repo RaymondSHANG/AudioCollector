@@ -90,7 +90,8 @@
                         .then(response => {
                             if (response.ok) {
                                 console.log('Audio uploaded successfully');
-                                return response.text();  // Or `response.json()` if the server responds with JSON
+                                window.location.href = '/audioCollect/myAudio'; 
+                                //return response.text();  // Or `response.json()` if the server responds with JSON
                             } else {
                                 throw new Error('Upload failed with status ' + response.status);
                             }
