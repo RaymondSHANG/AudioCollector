@@ -1,11 +1,10 @@
-name: myenv
+name: testFHIR
 
 dependencies:
   - python=3.12
   - numpy
   - pandas
   - matplotlib
-  - gunicorn
   - Werkzeug
   - WTForms
   - SQLAlchemy
@@ -14,13 +13,11 @@ dependencies:
   - uwsgi
   - email_validator
   - PyYAML
-  - pip
-  - pip:
-      - newspaper3k
-      - gnews
-      - lxml_html_clean
-      - Flask_SQLAlchemy
-      - Flask_WTF
-      - Flask_Login
-      - Flask_Migrate
-      - fhirclient==3.2
+  - newspaper3k
+  - gnews
+  - lxml_html_clean
+  - Flask_SQLAlchemy
+  - Flask_WTF
+  - Flask_Login
+  - Flask_Migrate
+  - fhirclient==3.2

@@ -45,7 +45,7 @@ def myAudio():
     except Exception as e:
         current_app.logger.error(f"Error accessing audio history: {e}")
         flash('Error accessing audio history.')
-        #return redirect(url_for('audioCollect_bp.audioCollect'))
+        return redirect(url_for('audioCollect_bp.audioCollect'))
 
 @audioCollect_bp.route('/audioCollect', methods=['GET'])
 @login_required
