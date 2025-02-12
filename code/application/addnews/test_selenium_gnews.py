@@ -16,4 +16,9 @@ redirected_url = driver.current_url  # Get the final redirected URL
 
 print("Redirected URL:", redirected_url)
 
+page_content = driver.page_source
+print("\n--- Page Content ---\n")
+print(page_content[:2000]) 
+with open("oneNews.html", "wb") as file:
+    file.write(page_content.encode())
 driver.quit()
