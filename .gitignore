@@ -4,4 +4,4 @@ __pycache__/
 audiofiles
 migrations
 code/migrations
-.sqlite
+*.sqlite
