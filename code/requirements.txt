@@ -15,4 +15,4 @@ numpy
 newspaper3k
 gnews
 lxml_html_clean
-
+googlenewsdecoder
