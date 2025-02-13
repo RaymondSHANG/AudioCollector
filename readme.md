@@ -39,7 +39,7 @@ pip install -r requirements.txt
 We used python sqlite database, and create 3 data tables to save the patient, news, and audio file information. To start, we could first run flask db (If database.sqlite is available, you could also ignore this part):
 ```
 rm -rf migrations
-rm applications/database.sqlite
+rm application/database.sqlite
 flask db init
 flask db migrate -m 'first migration'
 flask db upgrade

@@ -2,3 +2,6 @@ __pycache__/
 .DS_Store
 .idea
 audiofiles
+migrations
+code/migrations
+.sqlite

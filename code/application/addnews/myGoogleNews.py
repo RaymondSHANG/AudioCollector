@@ -3,8 +3,9 @@ import newspaper
 from datetime import datetime
 import hashlib
 from googlenewsdecoder import new_decoderv1
+from urllib.parse import urlparse
 
-
+exclude_newsurl = ["www.axios.com", "www.reuters.com"]
 class myGoogleNews():
     def __init__(self):
         pass
@@ -20,12 +21,16 @@ class myGoogleNews():
         for news_index in range(len(json_resp)):
             original_url = json_resp[news_index]['url']
             decoded_url = new_decoderv1(original_url, interval=interval_time)
+            # Exclude news from www.axios.com, and www.reuters.com
+            if urlparse(decoded_url['decoded_url']).netloc  in exclude_newsurl:
+                continue
             article = google_news.get_full_article(decoded_url['decoded_url'])
 
             if not article:
                 continue
             if not article.is_valid_url():                
                 continue
+            
             if verbose:
                 #print(f"Title:{article}")
                 print(f"url:{decoded_url['decoded_url']}")
