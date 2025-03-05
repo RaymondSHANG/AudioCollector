@@ -56,7 +56,40 @@ smart = connector.source_client
 #patient = Patient.read("18076", smart.server)
 
 search = Patient.where(struct={})
-patients = search.perform_resources(smart.server)
-for patient in patients:
-    print(patient.id)
-    break
+bundle = search.perform(smart.server)  # Perform the search and get the Bundle
+
+if bundle.entry:
+    for entry in bundle.entry:
+        patient = entry.resource
+        if patient.text and hasattr(patient.text, 'div'):
+            print(f"Patient ID: {patient.id}, Name: {patient.name[0].given[0]} {patient.name[0].family}")
+        else:
+            print(f"Patient ID: {patient.id} has missing or invalid 'text.div' field")
+else:
+    print("No patients found in the bundle.")
+
+#patients = search.perform_resources(smart.server)
+#for patient in patients:
+#    print(patient.id)
+#    break
+
+
+settings = {
+    'app_id': 'testing-app-id',
+    'api_base': 'http://hapi.fhir.org/baseDstu3/',
+    'strict': False  # Disable strict validation
+}
+
+smart2 = client.FHIRClient(settings=settings)
+search2 = Patient.where(struct={})
+bundle2 = search.perform(smart2.server)  # Perform the search and get the Bundle
+
+if bundle2.entry:
+    for entry in bundle.entry:
+        patient = entry.resource
+        if patient.text and hasattr(patient.text, 'div'):
+            print(f"Patient ID: {patient.id}, Name: {patient.name[0].given[0]} {patient.name[0].family}")
+        else:
+            print(f"Patient ID: {patient.id} has missing or invalid 'text.div' field")
+else:
+    print("No patients found in the bundle.")
