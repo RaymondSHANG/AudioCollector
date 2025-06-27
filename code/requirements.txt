@@ -16,3 +16,7 @@ newspaper3k
 gnews
 lxml_html_clean
 googlenewsdecoder
+PyAudio
+pyttsx3
+portaudio
+SpeechRecognition
